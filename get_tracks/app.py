@@ -1,33 +1,55 @@
+import time
 import json
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
-
+## need to add Selenium code
 def lambda_handler(event, context):
-    """Sample pure Lambda function
+    
+    ## Setup chrome options
+    chrome_options = Options()
+    chrome_options.binary_location = '/opt/chrome/chrome'
+    chrome_options.add_argument("--headless") # Ensure GUI is off
+    chrome_options.add_argument("--no-sandbox")
 
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
+    # Set path to chromedriver as per your configuration
+    webdriver_service = Service("/opt/chromedriver")
 
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
+    # Choose Chrome Browser
+    browser = webdriver.Chrome(service=webdriver_service, options=chrome_options)
 
-    context: object, required
-        Lambda Context runtime methods and attributes
+    # Get page
+    browser.get("https://www.sportsbet.com.au/racing-schedule/today")
 
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
+    # Extract description from page and print
+    trackElements = browser.find_elements(By.XPATH, "//td[contains(@data-automation-id,'horse-racing-section-row') and contains(@class, 'meetingCell')]")
+    numOfTracks = len(trackElements)
 
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
+    tracks = []
 
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
+    ## Loop through trackElements, selectTrackName and add to tracks array
+    for track in trackElements:
+        pattern = f"//span[contains(@data-automation-id,'horse-racing-section-row-{trackElements.index(track)+1}-meeting-name')]"
+        trackName = browser.find_element(By.XPATH, pattern)
+
+        racePattern =  f"//td[contains(@data-automation-id,'horse-racing-section-row-{trackElements.index(track)+1}-col-')]"
+        raceElements = browser.find_elements(By.XPATH, racePattern)
+        #print(trackName.text)
+        numOfRaces = len(raceElements)
+        
+        tracks.append({'track':trackName.text, 'races':numOfRaces})
+
+    #print(tracks)
+    #jsonOut = json.dumps(tracks)
+    #print(jsonOut)
+
+    #Wait for 10 seconds
+    time.sleep(1)
+    browser.quit()
 
     return {
         "statusCode": 200,
-        "body": json.dumps(
-            {
-                "message": "hello world",
-            }
-        ),
+        "body": json.dumps(tracks)
     }
