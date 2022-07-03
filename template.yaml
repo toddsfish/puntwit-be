@@ -19,6 +19,12 @@ Resources:
       Timeout: 300
       Architectures:
         - x86_64
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins: 
+            - '*'
+      
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./get_tracks
@@ -26,8 +32,11 @@ Resources:
 
 Outputs:
   GetTracksFunction:
-    Description: "Hello World Lambda Function ARN"
+    Description: "GetTracks Lambda Function ARN"
     Value: !GetAtt GetTracksFunction.Arn
   GetTracksFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
+    Description: "Implicit IAM Role created for GetTracks Lambda function"
     Value: !GetAtt GetTracksFunctionRole.Arn
+  GetTracksEndpoint:
+    Description: "GetTracksFunction Lambda Endpoint URL"
+    Value: !GetAtt GetTracksFunctionUrl.FunctionUrl

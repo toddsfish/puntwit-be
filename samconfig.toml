@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "puntwit-be"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-iq12mpr862zn"
+s3_prefix = "puntwit-be"
+region = "ap-southeast-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = ["GetTracksFunction=302766791300.dkr.ecr.ap-southeast-2.amazonaws.com/puntwitbe6c29b0a5/gettracksfunctiondfd987ecrepo"]
