@@ -63,14 +63,15 @@ def lambda_handler(event, context):
     #jsonOut = json.dumps(tracks)
     #print(jsonOut)
 
-    #Wait for 10 seconds
+    #Wait for 1 seconds
     time.sleep(1)
     browser.quit()
 
     return {
-        "statusCode": 201,
+        "statusCode": 200,
         "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "custom-head": "todd"
         },
         "body": json.dumps(tracks)
     }
